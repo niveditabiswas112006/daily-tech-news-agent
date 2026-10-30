@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.env
+data/news_history.db
+.DS_Store
