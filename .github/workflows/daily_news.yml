@@ -1,0 +1,32 @@
+name: 24/7 Cloud Daily Tech News Dispatcher
+
+on:
+  schedule:
+    # Daily 10:45 AM IST (05:15 UTC) & 09:00 AM IST (03:30 UTC)
+    - cron: '15 5 * * *'
+  workflow_dispatch: # Allows manual run button anytime from GitHub
+
+jobs:
+  run-daily-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install feedparser certifi "mcp<2" langchain langgraph langchain-core langchain-groq langchain-google-genai langchain-openai python-telegram-bot python-dotenv
+
+      - name: Execute LangGraph Multi-Domain News Agent
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python 03_langgraph_daily_agent.py --category all
